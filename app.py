@@ -19,11 +19,17 @@ st.sidebar.header("Filters")
 selected_state = st.sidebar.selectbox("Select State", ['All'] + list(df['State'].dropna().unique()))
 selected_account_type = st.sidebar.selectbox("Select Account Type", ['All', 'Individuals', 'Corporations', 'Pensions'])
 
+# AUM and Accounts Range Filters
+min_aum, max_aum = st.sidebar.slider("Select Total AUM Range", float(df['Total'].min()), float(df['Total'].max()), (float(df['Total'].min()), float(df['Total'].max())))
+min_accounts, max_accounts = st.sidebar.slider("Select Number of Accounts Range", float(df['Total Number of Accounts'].min()), float(df['Total Number of Accounts'].max()), (float(df['Total Number of Accounts'].min()), float(df['Total Number of Accounts'].max())))
+
 # Filter Data
 if selected_state != 'All':
     df = df[df['State'] == selected_state]
 if selected_account_type != 'All':
     df = df[df[f'Accts-{selected_account_type}'].notna()]
+df = df[(df['Total'] >= min_aum) & (df['Total'] <= max_aum)]
+df = df[(df['Total Number of Accounts'] >= min_accounts) & (df['Total Number of Accounts'] <= max_accounts)]
 
 # Key Metrics
 st.subheader("Key Sales Insights")
