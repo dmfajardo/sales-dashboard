@@ -9,7 +9,7 @@ def load_data():
     df = pd.read_csv(file_path, encoding="ISO-8859-1")
     df.columns = df.columns.str.strip()  # Ensure column names have no leading/trailing spaces
     if 'Total' in df.columns:
-        df['Total'] = pd.to_numeric(df['Total'], errors='coerce').fillna(0)  # Ensure 'Total' column is numeric and replace NaN with 0
+        df['Total'] = pd.to_numeric(df['Total'].replace({'\$': '', ',': ''}, regex=True), errors='coerce').fillna(0)  # Ensure 'Total' column is numeric and replace NaN with 0
     if 'Total Number of Accounts' in df.columns:
         df['Total Number of Accounts'] = pd.to_numeric(df['Total Number of Accounts'], errors='coerce').fillna(0).astype(int)
     return df
@@ -26,7 +26,7 @@ def format_currency(value):
         return f"${value / 1e6:.2f}MM"
     elif value >= 1e3:
         return f"${value / 1e3:.2f}K"
-    return f"${value:.2f}"
+    return f"${value:,.2f}"
 
 # Function to categorize AUM into ranges
 def categorize_aum(value):
